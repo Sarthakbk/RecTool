@@ -11,18 +11,25 @@ const FormField = ({
   options = [],
   rows = 3,
   step,
+  icon: Icon,
   ...props 
 }) => {
+  const handleChange = (e) => {
+    if (onChange) {
+      onChange(e.target.value);
+    }
+  };
+
   const renderField = () => {
     switch (type) {
       case 'textarea':
         return (
           <textarea
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+            value={value || ''}
+            onChange={handleChange}
             placeholder={placeholder}
             rows={rows}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
               error ? 'border-red-500' : 'border-gray-300'
             }`}
             {...props}
@@ -32,9 +39,9 @@ const FormField = ({
       case 'select':
         return (
           <select
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            value={value || ''}
+            onChange={handleChange}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
               error ? 'border-red-500' : 'border-gray-300'
             }`}
             {...props}
@@ -52,11 +59,11 @@ const FormField = ({
         return (
           <input
             type="number"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+            value={value || ''}
+            onChange={handleChange}
             placeholder={placeholder}
             step={step}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
               error ? 'border-red-500' : 'border-gray-300'
             }`}
             {...props}
@@ -67,10 +74,10 @@ const FormField = ({
         return (
           <input
             type={type}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+            value={value || ''}
+            onChange={handleChange}
             placeholder={placeholder}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
               error ? 'border-red-500' : 'border-gray-300'
             }`}
             {...props}
@@ -80,14 +87,15 @@ const FormField = ({
   };
 
   return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+    <div className="space-y-2">
+      <label className="flex items-center text-sm font-medium text-gray-700">
+        {Icon && <Icon className="w-4 h-4 mr-2 text-gray-500" />}
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       {renderField()}
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p className="text-sm text-red-600">{error}</p>
       )}
     </div>
   );

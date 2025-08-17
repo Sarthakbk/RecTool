@@ -71,9 +71,20 @@ const jdService = {
     return response.data;
   },
 
+  getCurrencies: async () => {
+    const response = await api.get('/api/currencies');
+    return response.data;
+  },
+
   // Health check
   healthCheck: async () => {
     const response = await api.get('/health');
+    return response.data;
+  },
+
+  // JD Scanning and Analysis
+  scanJobDescription: async (jdText) => {
+    const response = await api.post('/api/jd/scan', { jd_text: jdText });
     return response.data;
   },
 

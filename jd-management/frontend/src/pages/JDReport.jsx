@@ -10,6 +10,7 @@ const JDReport = () => {
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     loadJobs();
@@ -43,6 +44,14 @@ const JDReport = () => {
   const handleView = (job) => {
     setSelectedJob(job);
     setShowModal(true);
+  };
+
+  const handleHelpClick = () => {
+    setShowHelp(true);
+  };
+
+  const closeHelp = () => {
+    setShowHelp(false);
   };
 
   const formatSkills = (skills) => {
@@ -118,11 +127,20 @@ const JDReport = () => {
             >
               Update Aging
             </button>
+            <button
+              onClick={handleHelpClick}
+              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 flex items-center"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.564-.227 1.24-.227 1.808 0 .564.227 1.24.227 1.808 0 .564-.227 1.24-.227 1.808 0 .564.227 1.24.227 1.808 0M9 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Help
+            </button>
           </div>
-          <Link
-            to="/jd-entry"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
+                     <Link
+             to="/"
+             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+           >
             <PlusIcon className="h-5 w-5 mr-2" />
             Add New Job
           </Link>
@@ -276,7 +294,7 @@ const JDReport = () => {
             <div className="text-center py-12">
               <p className="text-gray-500">No job descriptions found.</p>
               <Link
-                to="/jd-entry"
+                to="/"
                 className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 <PlusIcon className="h-5 w-5 mr-2" />
@@ -339,7 +357,10 @@ const JDReport = () => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700">Budget:</label>
-                    <p className="text-sm text-gray-900">${selectedJob.jd_op_budget_min?.toLocaleString()}-${selectedJob.jd_op_budget_max?.toLocaleString()}</p>
+                    <p className="text-sm text-gray-900">
+                      {selectedJob.jd_currency === 'INR' ? '₹' : '$'}
+                      {selectedJob.jd_op_budget_min?.toLocaleString()}-{selectedJob.jd_op_budget_max?.toLocaleString()}
+                    </p>
                   </div>
                 </div>
                 
@@ -370,6 +391,72 @@ const JDReport = () => {
                 <button
                   onClick={() => setShowModal(false)}
                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Help Modal */}
+      {showHelp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Need Help?</h3>
+              <button
+                onClick={closeHelp}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-gray-600">
+                We're here to help you with the Job Description Management System.
+              </p>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-900 mb-2">Contact Support</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    <a 
+                      href="https://www.ankyahnexus.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 font-medium underline"
+                    >
+                      www.ankyahnexus.com
+                    </a>
+                  </div>
+                  <p className="text-sm text-blue-700">
+                    Visit our website for support and more information
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 mb-2">System Features</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• View and manage all job descriptions</li>
+                  <li>• Track job status and aging</li>
+                  <li>• Generate comprehensive reports</li>
+                  <li>• Export data for analysis</li>
+                </ul>
+              </div>
+              
+              <div className="text-center pt-4">
+                <button
+                  onClick={closeHelp}
+                  className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
                 >
                   Close
                 </button>

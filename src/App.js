@@ -1,23 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import JobDescriptionEntry from './components/JobDescriptionEntry';
 
 function App() {
-  const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    // Force component remount on page reload
-    const handleBeforeUnload = () => {
-      setReloadKey(prev => prev + 1);
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
-
   return (
     <div className="App">
       <Toaster 
@@ -44,9 +29,9 @@ function App() {
           },
         }}
       />
-      <JobDescriptionEntry key={reloadKey} />
+      <JobDescriptionEntry />
     </div>
   );
 }
 
-export default App; 
+export default App;

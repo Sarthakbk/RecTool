@@ -1,8 +1,12 @@
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from .env file (if it exists)
+try:
+    load_dotenv()
+except Exception:
+    # If .env file doesn't exist or has issues, continue without it
+    pass
 
 class Config:
     """Base configuration class"""
