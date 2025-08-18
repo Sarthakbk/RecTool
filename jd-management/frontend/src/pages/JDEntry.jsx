@@ -21,29 +21,30 @@ const JDEntry = () => {
     { user_id: 2, full_name: 'Gauthami' }
   ];
   
-  const [formData, setFormData] = useState({
-    jd_title: '',
-    jd_customer_id: '1', // Default to sample customer ID
-    jd_consumer: '',
-    jd_original: '', // Ensure this is initialized as empty string
-    jd_skillset_cat: '1', // Default to sample category ID
-    jd_skillset: [],
-    jd_mode: '',
-    jd_tenure: '',
-    jd_op_exp_min: '',
-    jd_op_exp_max: '',
-    jd_op_budget_min: '',
-    jd_op_budget_max: '',
-    jd_open_position: '',
-    jd_available_pos: '',
-    jd_revenue_potential: '',
-    jd_currency: 'USD',  // Default to USD
-    jd_keywords: [],
-    jd_source: '',
-    jd_special_instruction: '',
-    jd_created_by: '',
-    jd_status: '1' // Default to active status
-  });
+     const [formData, setFormData] = useState({
+     jd_title: '',
+     jd_customer_id: '1', 
+     jd_company: '',
+     jd_consumer: '',
+     jd_original: '', 
+     jd_skillset_cat: '1', 
+     jd_skillset: [],
+     jd_mode: '',
+     jd_tenure: '',
+     jd_op_exp_min: '',
+     jd_op_exp_max: '',
+     jd_op_budget_min: '',
+     jd_op_budget_max: '',
+     jd_open_position: '',
+     jd_available_pos: '',
+     jd_revenue_potential: '',
+     jd_currency: 'USD',  // Default to USD
+     jd_keywords: [],
+     jd_source: '',
+     jd_special_instruction: '',
+     jd_created_by: '',
+     jd_status: '1' // Default to active status
+   });
 
   const [skillInput, setSkillInput] = useState('');
   const [keywordInput, setKeywordInput] = useState('');
@@ -60,6 +61,8 @@ const JDEntry = () => {
   useEffect(() => {
     loadReferenceData();
   }, []);
+
+  
 
   useEffect(() => {
     const loadForEdit = async () => {
@@ -190,31 +193,32 @@ const JDEntry = () => {
     setShowHelp(false);
   };
 
-  // Function to reset form to initial state
-  const resetForm = () => {
-    setFormData({
-      jd_title: '',
-      jd_customer_id: '1', // Default to sample customer ID
-      jd_consumer: '',
-      jd_original: '', // Ensure this is initialized as empty string
-      jd_skillset_cat: '1', // Default to sample category ID
-      jd_skillset: [],
-      jd_mode: '',
-      jd_tenure: '',
-      jd_op_exp_min: '',
-      jd_op_exp_max: '',
-      jd_op_budget_min: '',
-      jd_op_budget_max: '',
-      jd_open_position: '',
-      jd_available_pos: '',
-      jd_revenue_potential: '',
-      jd_currency: 'USD',  // Default to USD
-      jd_keywords: [],
-      jd_source: '',
-      jd_special_instruction: '',
-      jd_created_by: '',
-      jd_status: '1' // Default to active status
-    });
+     // Function to reset form to initial state
+   const resetForm = () => {
+     setFormData({
+       jd_title: '',
+       jd_customer_id: '1', // Default to sample customer ID
+       jd_company: '',
+       jd_consumer: '',
+       jd_original: '', // Ensure this is initialized as empty string
+       jd_skillset_cat: '1', // Default to sample category ID
+       jd_skillset: [],
+       jd_mode: '',
+       jd_tenure: '',
+       jd_op_exp_min: '',
+       jd_op_exp_max: '',
+       jd_op_budget_min: '',
+       jd_op_budget_max: '',
+       jd_open_position: '',
+       jd_available_pos: '',
+       jd_revenue_potential: '',
+       jd_currency: 'USD',  // Default to USD
+       jd_keywords: [],
+       jd_source: '',
+       jd_special_instruction: '',
+       jd_created_by: '',
+       jd_status: '1' // Default to active status
+     });
     setSkillInput('');
     setKeywordInput('');
   };
@@ -222,12 +226,12 @@ const JDEntry = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate required fields
-    const requiredFields = [
-      'jd_title', 'jd_customer_id', 'jd_consumer', 'jd_original', 
-      'jd_mode', 'jd_tenure', 'jd_op_exp_min', 'jd_op_exp_max',
-      'jd_op_budget_min', 'jd_op_budget_max', 'jd_created_by'
-    ];
+         // Validate required fields
+     const requiredFields = [
+       'jd_title', 'jd_company', 'jd_consumer', 'jd_original', 
+       'jd_mode', 'jd_tenure', 'jd_op_exp_min', 'jd_op_exp_max',
+       'jd_op_budget_min', 'jd_op_budget_max'
+     ];
     
     const missingFields = requiredFields.filter(field => {
       const value = formData[field];
@@ -248,24 +252,26 @@ const JDEntry = () => {
       return;
     }
 
+
+
     setLoading(true);
     try {
-      // Convert arrays to JSON strings for backend
-      const submitData = {
-        ...formData,
-        jd_skillset: JSON.stringify(formData.jd_skillset),
-        jd_keywords: formData.jd_keywords.length > 0 ? JSON.stringify(formData.jd_keywords) : null,
-        jd_customer_id: parseInt(formData.jd_customer_id),
-        jd_tenure: parseInt(formData.jd_tenure),
-        jd_op_exp_min: parseFloat(formData.jd_op_exp_min),
-        jd_op_exp_max: parseFloat(formData.jd_op_exp_max),
-        jd_op_budget_min: parseFloat(formData.jd_op_budget_min),
-        jd_op_budget_max: parseFloat(formData.jd_op_budget_max),
-        jd_open_position: formData.jd_open_position ? parseInt(formData.jd_open_position) : null,
-        jd_mode: parseInt(formData.jd_mode),
-        jd_created_by: parseInt(formData.jd_created_by),
-        jd_status: parseInt(formData.jd_status)
-      };
+             // Convert arrays to JSON strings for backend
+       const submitData = {
+         ...formData,
+         jd_skillset: JSON.stringify(formData.jd_skillset),
+         jd_keywords: formData.jd_keywords.length > 0 ? JSON.stringify(formData.jd_keywords) : null,
+         jd_customer_id: parseInt(formData.jd_customer_id),
+         jd_tenure: parseInt(formData.jd_tenure),
+         jd_op_exp_min: parseFloat(formData.jd_op_exp_min),
+         jd_op_exp_max: parseFloat(formData.jd_op_exp_max),
+         jd_op_budget_min: parseFloat(formData.jd_op_budget_min),
+         jd_op_budget_max: parseFloat(formData.jd_op_budget_max),
+         jd_open_position: formData.jd_open_position ? parseInt(formData.jd_open_position) : null,
+         jd_mode: parseInt(formData.jd_mode),
+         jd_status: parseInt(formData.jd_status),
+         jd_company: formData.jd_company
+       };
       
       const response = id ? await jdService.updateJob(id, submitData) : await jdService.createJob(submitData);
       toast.success(id ? 'Job Description updated successfully!' : 'Job Description created successfully!');
@@ -291,16 +297,34 @@ const JDEntry = () => {
     ...(users.filter(user => !defaultUsers.find(du => du.user_id === user.user_id)))
   ];
 
-  return (
+
+
+    return (
     <div className="min-h-screen bg-gray-50 py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div 
+          className="flex justify-between items-center mb-8"
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 10,
+            backgroundColor: 'white'
+          }}
+        >
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Job Description Form</h1>
             <p className="mt-2 text-gray-600">Enter the job description details and click SAVE to proceed.</p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              type="submit"
+              form="jd-entry-form"
+              disabled={loading}
+              className="px-8 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {loading ? 'Saving...' : 'SAVE'}
+            </button>
             <button
               type="button"
               className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
@@ -315,271 +339,249 @@ const JDEntry = () => {
         </div>
 
         {/* Main Content Area - Two Columns */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form id="jd-entry-form" onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            {/* Left Column - Original JD, Keywords, and Notes */}
-            <div className="space-y-6">
-              
-              {/* Original JD Section */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Original JD</h2>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Job Description Text
-                    </label>
-                    <textarea
-                      value={formData.jd_original}
-                      onChange={(e) => handleInputChange('jd_original', e.target.value)}
-                      required
-                      placeholder="Paste the original job description here..."
-                      rows={12}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                  
-                  <div className="flex justify-center">
-                    <button
-                      type="button"
-                      onClick={handleScanJD}
-                      disabled={scanning || !formData.jd_original || typeof formData.jd_original !== 'string' || !formData.jd_original.trim()}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      {scanning ? 'Scanning...' : 'SCAN'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* JD Keywords Section */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">JD Keywords</h2>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Keywords
-                    </label>
-                    <textarea
-                      value={formData.jd_keywords.join(', ')}
-                      onChange={(e) => {
-                        const keywords = e.target.value.split(',').map(k => k.trim()).filter(k => k);
-                        handleInputChange('jd_keywords', keywords);
-                      }}
-                      placeholder="Enter keywords (comma-separated)"
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              {/* Notes Section */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Notes</h2>
-                <div className="space-y-4">
-                  <FormField
-                    label="Source"
-                    value={formData.jd_source}
-                    onChange={(value) => handleInputChange('jd_source', value)}
-                    placeholder="Job source (e.g., LinkedIn, Indeed)"
-                  />
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Special Instruction
-                    </label>
-                    <textarea
-                      value={formData.jd_special_instruction}
-                      onChange={(value) => handleInputChange('jd_special_instruction', value)}
-                      placeholder="Enter special instructions or notes..."
-                      rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
+                         {/* Left Column - Original JD and Keywords */}
+             <div className="space-y-6">
+               
+               {/* Original JD Section */}
+               <div className="bg-white rounded-lg shadow-sm border p-6">
+                 <h2 className="text-lg font-bold text-gray-900 mb-4">Original JD</h2>
+                 <div className="space-y-4">
+                   <div className="space-y-2">
+                     <label className="block text-sm font-medium text-gray-700">
+                       Job Description Text
+                     </label>
+                     <textarea
+                       value={formData.jd_original}
+                       onChange={(e) => handleInputChange('jd_original', e.target.value)}
+                       required
+                       placeholder="Paste the original job description here..."
+                       rows={12}
+                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                     />
+                   </div>
+                   
+                   <div className="flex justify-center">
+                     <button
+                       type="button"
+                       onClick={handleScanJD}
+                       disabled={scanning || !formData.jd_original || typeof formData.jd_original !== 'string' || !formData.jd_original.trim()}
+                       className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                     >
+                       {scanning ? 'Scanning...' : 'SCAN'}
+                     </button>
+                   </div>
+                 </div>
+                               </div>
+                
+                {/* JD Keywords Section */}
+                <div className="bg-white rounded-lg shadow-sm border p-6">
+                  <h2 className="text-lg font-bold text-gray-900 mb-4">JD Keywords</h2>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Keywords
+                      </label>
+                      <textarea
+                        value={formData.jd_keywords.join(', ')}
+                        onChange={(e) => {
+                          const keywords = e.target.value.split(',').map(k => k.trim()).filter(k => k);
+                          handleInputChange('jd_keywords', keywords);
+                        }}
+                        placeholder="Enter keywords (comma-separated)"
+                        rows={6}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
             
-            {/* Right Column - All Other Fields */}
-            <div className="space-y-6">
-              
-              {/* Basic Information Section */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Basic Information</h2>
-                <div className="space-y-4">
-                  <FormField
-                    label="JD Title"
-                    value={formData.jd_title}
-                    onChange={(value) => handleInputChange('jd_title', value)}
-                    required
-                    placeholder="Enter job title"
-                  />
-                  
-                  <FormField
-                    label="Customer"
-                    type="select"
-                    value={formData.jd_customer_id}
-                    onChange={(value) => handleInputChange('jd_customer_id', value)}
-                    required
-                    placeholder="Select customer"
-                    options={[
-                      { value: '1', label: 'Sample Company' }
-                    ]}
-                  />
-                  
-                  <FormField
-                    label="Company"
-                    value={formData.jd_consumer}
-                    onChange={(value) => handleInputChange('jd_consumer', value)}
-                    required
-                    placeholder="Enter company name"
-                  />
-                  
-                  <FormField
-                    label="Primary Skill"
-                    value={formData.jd_skillset.length > 0 ? formData.jd_skillset[0] : ''}
-                    onChange={(value) => {
-                      if (formData.jd_skillset.length > 0) {
-                        const newSkills = [...formData.jd_skillset];
-                        newSkills[0] = value;
-                        handleInputChange('jd_skillset', newSkills);
-                      } else {
-                        handleInputChange('jd_skillset', [value]);
-                      }
-                    }}
-                    required
-                    placeholder="Enter primary skill"
-                  />
-                  
-                  <FormField
-                    label="Mode"
-                    type="select"
-                    value={formData.jd_mode}
-                    onChange={(value) => handleInputChange('jd_mode', value)}
-                    required
-                    placeholder="Select work mode"
-                    options={modeOptions}
-                  />
-                  
-                  <FormField
-                    label="Tenure in months"
-                    type="number"
-                    value={formData.jd_tenure}
-                    onChange={(value) => handleInputChange('jd_tenure', value)}
-                    required
-                    placeholder="Enter tenure"
-                    step="1"
-                  />
-                  
-                  <div className="grid grid-cols-2 gap-4">
+                         {/* Right Column - Basic Information */}
+             <div className="space-y-6">
+               
+                                               {/* Basic Information Section */}
+                <div className="bg-white rounded-lg shadow-sm border p-6">
+                  <h2 className="text-lg font-bold text-gray-900 mb-4">Basic Information</h2>
+                  <div className="space-y-4">
                     <FormField
-                      label="Open Positions"
-                      type="number"
-                      value={formData.jd_open_position}
-                      onChange={(value) => handleInputChange('jd_open_position', value)}
-                      placeholder="Number of positions"
-                      step="1"
+                      label="JD Title"
+                      value={formData.jd_title}
+                      onChange={(value) => handleInputChange('jd_title', value)}
+                      required
+                      placeholder="Enter job title"
+                    />
+                    
+                                         <FormField
+                       label="Company"
+                       value={formData.jd_company}
+                       onChange={(value) => handleInputChange('jd_company', value)}
+                       required
+                                               placeholder="Enter company name"
+                     />
+                    
+                    <FormField
+                      label="Customer"
+                      value={formData.jd_consumer}
+                      onChange={(value) => handleInputChange('jd_consumer', value)}
+                      required
+                      placeholder="Enter customer name"
                     />
                     
                     <FormField
-                      label="Available Positions"
-                      value={formData.jd_available_pos}
-                      onChange={(value) => handleInputChange('jd_available_pos', value)}
-                      placeholder="Available positions"
+                      label="Primary Skill"
+                      value={formData.jd_skillset.length > 0 ? formData.jd_skillset[0] : ''}
+                      onChange={(value) => {
+                        if (formData.jd_skillset.length > 0) {
+                          const newSkills = [...formData.jd_skillset];
+                          newSkills[0] = value;
+                          handleInputChange('jd_skillset', newSkills);
+                        } else {
+                          handleInputChange('jd_skillset', [value]);
+                        }
+                      }}
+                      required
+                      placeholder="Enter primary skill"
+                    />
+                    
+                    <FormField
+                      label="Mode"
+                      type="select"
+                      value={formData.jd_mode}
+                      onChange={(value) => handleInputChange('jd_mode', value)}
+                      required
+                      placeholder="Select work mode"
+                      options={modeOptions}
+                    />
+                    
+                                         <FormField
+                       label="Tenure In Months"
+                       value={formData.jd_tenure}
+                       onChange={(value) => handleInputChange('jd_tenure', value)}
+                       required
+                       placeholder="Enter tenure"
+                     />
+                    
+                                         <div className="grid grid-cols-2 gap-4">
+                       <FormField
+                         label="Open Positions"
+                         value={formData.jd_open_position}
+                         onChange={(value) => handleInputChange('jd_open_position', value)}
+                         placeholder="Number of positions"
+                       />
+                       
+                       <FormField
+                         label="Available Positions"
+                         value={formData.jd_available_pos}
+                         onChange={(value) => handleInputChange('jd_available_pos', value)}
+                         placeholder="Available positions"
+                       />
+                     </div>
+                     
+                     
+                    
+                    
+                    
+                    <FormField
+                      label="Job Status"
+                      type="select"
+                      value={formData.jd_status}
+                      onChange={(value) => handleInputChange('jd_status', value)}
+                      required
+                      placeholder="Select status"
+                      options={[
+                        { value: '1', label: 'Active' },
+                        { value: '2', label: 'Draft' },
+                        { value: '3', label: 'Closed' },
+                        { value: '4', label: 'On Hold' },
+                      ]}
                     />
                   </div>
-                  
-                  <FormField
-                    label="Created By"
-                    type="select"
-                    value={formData.jd_created_by}
-                    onChange={(value) => handleInputChange('jd_created_by', value)}
-                    required
-                    placeholder="Select user"
-                    options={allUsers.map(user => ({ value: user.user_id, label: user.full_name }))}
-                  />
-                  
-                  <FormField
-                    label="Job Status"
-                    type="select"
-                    value={formData.jd_status}
-                    onChange={(value) => handleInputChange('jd_status', value)}
-                    required
-                    placeholder="Select status"
-                    options={[
-                      { value: '1', label: 'Active' },
-                      { value: '2', label: 'Draft' },
-                      { value: '3', label: 'Closed' }
-                    ]}
-                  />
                 </div>
-              </div>
-              
-              {/* Fitment Criteria Section */}
+             </div>
+           </div>
+           
+           {/* Notes and Fitment Criteria Row - Side by Side */}
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+             
+             {/* Notes Section */}
+             <div className="bg-white rounded-lg shadow-sm border p-6">
+               <h2 className="text-lg font-bold text-gray-900 mb-4">Notes</h2>
+               <div className="space-y-4">
+                 <FormField
+                   label="Source"
+                   value={formData.jd_source}
+                   onChange={(value) => handleInputChange('jd_source', value)}
+                   placeholder="Job source (e.g., LinkedIn, Indeed)"
+                 />
+                 
+                 <div className="space-y-2">
+                   <label className="block text-sm font-medium text-gray-700">
+                     Special Instruction
+                   </label>
+                   <textarea
+                     value={formData.jd_special_instruction}
+                     onChange={(value) => handleInputChange('jd_special_instruction', value)}
+                     placeholder="Enter special instructions or notes..."
+                     rows={4}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   />
+                 </div>
+               </div>
+             </div>
+             
+                                         {/* Fitment Criteria Section */}
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">Fitment Criteria</h2>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      label="Op Experience Min"
-                      type="number"
-                      value={formData.jd_op_exp_min}
-                      onChange={(value) => handleInputChange('jd_op_exp_min', value)}
-                      required
-                      placeholder="Min years"
-                      step="0.5"
-                    />
+                                         <FormField
+                       label="Op Experience Min"
+                       value={formData.jd_op_exp_min}
+                       onChange={(value) => handleInputChange('jd_op_exp_min', value)}
+                       required
+                       placeholder="Min years"
+                     />
                     
-                    <FormField
-                      label="Op Experience Max"
-                      type="number"
-                      value={formData.jd_op_exp_max}
-                      onChange={(value) => handleInputChange('jd_op_exp_max', value)}
-                      required
-                      placeholder="Max years"
-                      step="0.5"
-                    />
+                                         <FormField
+                       label="Op Experience Max"
+                       value={formData.jd_op_exp_max}
+                       onChange={(value) => handleInputChange('jd_op_exp_max', value)}
+                       required
+                       placeholder="Max years"
+                     />
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      label="Op Budget Min"
-                      type="number"
-                      value={formData.jd_op_budget_min}
-                      onChange={(value) => handleInputChange('jd_op_budget_min', value)}
-                      required
-                      placeholder="Enter minimum budget"
-                      step="1000"
-                    />
+                                                                                                                                                                          <div className="grid grid-cols-2 gap-4">
+                     <FormField
+                       label="Op Budget Min"
+                       value={formData.jd_op_budget_min ? Number(formData.jd_op_budget_min).toLocaleString('en-IN') : ''}
+                       onChange={(value) => {
+                         const numericValue = value.replace(/[^\d]/g, '');
+                         handleInputChange('jd_op_budget_min', numericValue);
+                       }}
+                       required
+                       placeholder="Enter minimum budget (e.g., 1,00,000)"
+                     />
                     
-                    <FormField
-                      label="Op Budget Max"
-                      type="number"
-                      value={formData.jd_op_budget_max}
-                      onChange={(value) => handleInputChange('jd_op_budget_max', value)}
-                      required
-                      placeholder="Enter maximum budget"
-                      step="1000"
-                    />
-                  </div>
+                     <FormField
+                       label="Op Budget Max"
+                       value={formData.jd_op_budget_max ? Number(formData.jd_op_budget_max).toLocaleString('en-IN') : ''}
+                       onChange={(value) => {
+                         const numericValue = value.replace(/[^\d]/g, '');
+                         handleInputChange('jd_op_budget_max', numericValue);
+                       }}
+                       required
+                       placeholder="Enter maximum budget (e.g., 5,00,000)"
+                     />
+                   </div> 
                   
-                  <FormField
-                    label="Currency"
-                    type="select"
-                    value={formData.jd_currency}
-                    onChange={(value) => handleInputChange('jd_currency', value)}
-                    required
-                    placeholder="Select currency"
-                    options={currencies.map(currency => ({ 
-                      value: currency.currency_code, 
-                      label: `${currency.currency_name} (${currency.symbol})` 
-                    }))}
-                  />
+                  
                 </div>
               </div>
-            </div>
-          </div>
+           </div>
           
           {/* Footer Action Area */}
           <div className="flex justify-end pt-6">
