@@ -1,5 +1,0 @@
-# Minimal requirements for simple server
-# This server can run with just Python standard library
-# No external packages needed!
-
-# If you want to use the full Flask backend later, use requirements.txt instead 

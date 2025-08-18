@@ -5,9 +5,6 @@ COLLATE utf8mb4_unicode_ci;
 
 USE rectool_db;
 
--- =====================================================
--- Customers table (for jd_customer_id foreign key)
--- =====================================================
 CREATE TABLE IF NOT EXISTS customers (
     customer_id INT PRIMARY KEY AUTO_INCREMENT,
     customer_name VARCHAR(150) NOT NULL,
@@ -20,9 +17,7 @@ CREATE TABLE IF NOT EXISTS customers (
     INDEX idx_customer_name (customer_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- Skillset Categories table (for jd_skillset_cat)
--- =====================================================
+
 CREATE TABLE IF NOT EXISTS skillset_categories (
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     category_name VARCHAR(100) NOT NULL UNIQUE,
@@ -33,9 +28,7 @@ CREATE TABLE IF NOT EXISTS skillset_categories (
     INDEX idx_category_name (category_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- Engagement Modes table (for jd_mode)
--- =====================================================
+
 CREATE TABLE IF NOT EXISTS engagement_modes (
     mode_id INT PRIMARY KEY AUTO_INCREMENT,
     mode_name VARCHAR(50) NOT NULL UNIQUE,
@@ -46,9 +39,7 @@ CREATE TABLE IF NOT EXISTS engagement_modes (
     INDEX idx_mode_name (mode_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- Users table (for tracking who created/updated JDs)
--- =====================================================
+
 CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -64,9 +55,7 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_role (role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- Job Descriptions table (Updated to match data dictionary)
--- =====================================================
+
 CREATE TABLE IF NOT EXISTS job_descriptions (
     jd_id INT PRIMARY KEY AUTO_INCREMENT COMMENT 'Unique identifier for each Job Description',
     jd_title VARCHAR(150) NOT NULL COMMENT 'Job Description Title',

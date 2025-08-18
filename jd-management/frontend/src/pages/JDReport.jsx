@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import jdService from '../services/jdService';
@@ -10,7 +10,8 @@ const JDReport = () => {
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
+  const location = useLocation();
+  const highlightId = location.state?.highlightId;
 
   useEffect(() => {
     loadJobs();
@@ -44,14 +45,6 @@ const JDReport = () => {
   const handleView = (job) => {
     setSelectedJob(job);
     setShowModal(true);
-  };
-
-  const handleHelpClick = () => {
-    setShowHelp(true);
-  };
-
-  const closeHelp = () => {
-    setShowHelp(false);
   };
 
   const formatSkills = (skills) => {
@@ -113,34 +106,11 @@ const JDReport = () => {
         />
 
         {/* Action Bar */}
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex space-x-4">
-            <button
-              onClick={() => loadJobs()}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-            >
-              Refresh
-            </button>
-            <button
-              onClick={() => jdService.updateAging()}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              Update Aging
-            </button>
-            <button
-              onClick={handleHelpClick}
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 flex items-center"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.564-.227 1.24-.227 1.808 0 .564.227 1.24.227 1.808 0 .564-.227 1.24-.227 1.808 0 .564.227 1.24.227 1.808 0M9 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Help
-            </button>
-          </div>
-                     <Link
-             to="/"
-             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-           >
+        <div className="mb-6 flex justify-end">
+          <Link
+            to="/"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
             <PlusIcon className="h-5 w-5 mr-2" />
             Add New Job
           </Link>
@@ -152,111 +122,34 @@ const JDReport = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Job Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Customer & Skills
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Requirements
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status & Aging
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenure</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Positions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aging</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created By</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className= "bg-white divide-y divide-gray-200">
                 {jobs.map((job) => (
                   <tr key={job.jd_id} className="hover:bg-gray-50">
-                    {/* Job Details Column */}
-                    <td className="px-6 py-4">
-                      <div className="space-y-2">
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900">
-                            {job.jd_title}
-                          </h3>
-                          <p className="text-xs text-gray-500">
-                            ID: {job.jd_id}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getModeColor(job.job_mode_name)}`}>
-                            {job.job_mode_name}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {job.jd_tenure} months
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-600 line-clamp-2">
-                          {job.jd_original?.substring(0, 100)}...
-                        </p>
-                      </div>
+                    <td className={`px-6 py-4 text-sm ${highlightId && Number(highlightId) === Number(job.jd_id) ? 'bg-yellow-50 font-semibold text-gray-900' : 'text-gray-900'}`}>{job.customer_name || 'Sample Company'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{job.jd_consumer || '—'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{job.job_mode_name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{job.jd_tenure} mo</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{job.jd_op_exp_min}-{job.jd_op_exp_max} yrs</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{(job.jd_currency === 'INR' ? '₹' : '$')}{job.jd_op_budget_min?.toLocaleString()}-{(job.jd_currency === 'INR' ? '₹' : '$')}{job.jd_op_budget_max?.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{job.jd_open_position || 'N/A'}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(job.job_status_name)}`}>{job.job_status_name}</span>
                     </td>
-
-                    {/* Customer & Skills Column */}
-                    <td className="px-6 py-4">
-                      <div className="space-y-2">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">
-                            {job.customer_name}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {job.jd_consumer}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-600">
-                            <span className="font-medium">Category:</span> {job.skillset_category_name || 'N/A'}
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            <span className="font-medium">Skills:</span> {formatSkills(job.jd_skillset)}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Requirements Column */}
-                    <td className="px-6 py-4">
-                      <div className="space-y-2">
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div>
-                            <span className="font-medium">Exp:</span> {job.jd_op_exp_min}-{job.jd_op_exp_max} yrs
-                          </div>
-                          <div>
-                            <span className="font-medium">Budget:</span> ${job.jd_op_budget_min?.toLocaleString()}-${job.jd_op_budget_max?.toLocaleString()}
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div>
-                            <span className="font-medium">Positions:</span> {job.jd_open_position || 'N/A'}
-                          </div>
-                          <div>
-                            <span className="font-medium">Revenue:</span> {job.jd_revenue_potential || 'N/A'}
-                          </div>
-                        </div>
-                        <p className="text-xs text-gray-600">
-                          <span className="font-medium">Keywords:</span> {formatKeywords(job.jd_keywords)}
-                        </p>
-                      </div>
-                    </td>
-
-                    {/* Status & Aging Column */}
-                    <td className="px-6 py-4">
-                      <div className="space-y-2">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(job.job_status_name)}`}>
-                          {job.job_status_name}
-                        </span>
-                        <div className="text-xs text-gray-600">
-                          <p><span className="font-medium">Created:</span> {new Date(job.jd_created_date).toLocaleDateString()}</p>
-                          <p><span className="font-medium">Aging:</span> {job.jd_aging || 0} days</p>
-                          <p><span className="font-medium">By:</span> {job.created_by_name}</p>
-                        </div>
-                      </div>
-                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{job.jd_aging || 0} days</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{job.created_by_name}</td>
 
                     {/* Actions Column */}
                     <td className="px-6 py-4">
@@ -268,13 +161,13 @@ const JDReport = () => {
                         >
                           <EyeIcon className="h-5 w-5" />
                         </button>
-                        <button
-                          onClick={() => {/* TODO: Implement edit */}}
+                        <Link
+                          to={`/edit/${job.jd_id}`}
                           className="text-green-600 hover:text-green-900"
                           title="Edit"
                         >
                           <PencilIcon className="h-5 w-5" />
-                        </button>
+                        </Link>
                         <button
                           onClick={() => handleDelete(job.jd_id)}
                           className="text-red-600 hover:text-red-900"
@@ -307,160 +200,150 @@ const JDReport = () => {
 
       {/* Job Details Modal */}
       {showModal && selectedJob && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Job Description Details
-                </h3>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  ×
-                </button>
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-gray-900/60" onClick={() => setShowModal(false)} />
+          <div className="relative mx-auto top-16 w-11/12 md:w-4/5 lg:w-3/4 max-w-5xl bg-white rounded-xl shadow-2xl border">
+            {/* Header */}
+            <div className="sticky top-0 flex items-center justify-between px-6 py-4 border-b bg-white/90 backdrop-blur">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">{selectedJob.jd_title}</h3>
+                <p className="text-xs text-gray-500">ID: {selectedJob.jd_id}</p>
               </div>
-              
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Title:</label>
-                    <p className="text-sm text-gray-900">{selectedJob.jd_title}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Customer:</label>
-                    <p className="text-sm text-gray-900">{selectedJob.customer_name}</p>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-gray-700">Description:</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedJob.jd_original}</p>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Skills:</label>
-                    <p className="text-sm text-gray-900">{formatSkills(selectedJob.jd_skillset)}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Keywords:</label>
-                    <p className="text-sm text-gray-900">{formatKeywords(selectedJob.jd_keywords)}</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Experience:</label>
-                    <p className="text-sm text-gray-900">{selectedJob.jd_op_exp_min}-{selectedJob.jd_op_exp_max} years</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Budget:</label>
-                    <p className="text-sm text-gray-900">
-                      {selectedJob.jd_currency === 'INR' ? '₹' : '$'}
-                      {selectedJob.jd_op_budget_min?.toLocaleString()}-{selectedJob.jd_op_budget_max?.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Mode:</label>
-                    <p className="text-sm text-gray-900">{selectedJob.job_mode_name}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Status:</label>
-                    <p className="text-sm text-gray-900">{selectedJob.job_status_name}</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Created:</label>
-                    <p className="text-sm text-gray-900">{new Date(selectedJob.jd_created_date).toLocaleDateString()}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Aging:</label>
-                    <p className="text-sm text-gray-900">{selectedJob.jd_aging || 0} days</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Help Modal */}
-      {showHelp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-gray-900">Need Help?</h3>
               <button
-                onClick={closeHelp}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                onClick={() => setShowModal(false)}
+                className="inline-flex items-center justify-center h-9 w-9 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition"
+                aria-label="Close"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                We're here to help you with the Job Description Management System.
-              </p>
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-900 mb-2">Contact Support</h4>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                    </svg>
-                    <a 
-                      href="https://www.ankyahnexus.com" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 font-medium underline"
-                    >
-                      www.ankyahnexus.com
-                    </a>
-                  </div>
-                  <p className="text-sm text-blue-700">
-                    Visit our website for support and more information
+
+            {/* Body */}
+            <div className="p-6 max-h-[70vh] overflow-y-auto space-y-6">
+              {/* Top badges */}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedJob.job_status_name)}`}>
+                  {selectedJob.job_status_name}
+                </span>
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getModeColor(selectedJob.job_mode_name)}`}>
+                  {selectedJob.job_mode_name}
+                </span>
+                <span className="text-xs text-gray-500">Created: {new Date(selectedJob.jd_created_date).toLocaleDateString()}</span>
+                <span className="text-xs text-gray-500">Aging: {selectedJob.jd_aging || 0} days</span>
+              </div>
+
+              {/* Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="rounded-lg border bg-gray-50 p-4">
+                  <p className="text-xs text-gray-500">Customer</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedJob.customer_name || '—'}</p>
+                </div>
+                <div className="rounded-lg border bg-gray-50 p-4">
+                  <p className="text-xs text-gray-500">Company</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedJob.jd_consumer || '—'}</p>
+                </div>
+                <div className="rounded-lg border bg-gray-50 p-4">
+                  <p className="text-xs text-gray-500">Experience</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedJob.jd_op_exp_min}-{selectedJob.jd_op_exp_max} yrs</p>
+                </div>
+                <div className="rounded-lg border bg-gray-50 p-4">
+                  <p className="text-xs text-gray-500">Budget</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {selectedJob.jd_currency === 'INR' ? '₹' : '$'}{selectedJob.jd_op_budget_min?.toLocaleString()} - {selectedJob.jd_currency === 'INR' ? '₹' : '$'}{selectedJob.jd_op_budget_max?.toLocaleString()}
                   </p>
                 </div>
               </div>
-              
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">System Features</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• View and manage all job descriptions</li>
-                  <li>• Track job status and aging</li>
-                  <li>• Generate comprehensive reports</li>
-                  <li>• Export data for analysis</li>
-                </ul>
+
+              {/* Description */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 mb-2">Description</h4>
+                <div className="rounded-lg border p-4 bg-white max-h-60 overflow-y-auto">
+                  <p className="whitespace-pre-line text-sm text-gray-800">{selectedJob.jd_original}</p>
+                </div>
               </div>
-              
-              <div className="text-center pt-4">
-                <button
-                  onClick={closeHelp}
-                  className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
-                >
-                  Close
-                </button>
+
+              {/* Details grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold text-gray-900">Role Details</h4>
+                  <div className="rounded-lg border divide-y">
+                    <div className="flex items-center justify-between p-3 text-sm">
+                      <span className="text-gray-500">Tenure</span>
+                      <span className="font-medium text-gray-900">{selectedJob.jd_tenure} months</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 text-sm">
+                      <span className="text-gray-500">Positions</span>
+                      <span className="font-medium text-gray-900">{selectedJob.jd_open_position || '—'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 text-sm">
+                      <span className="text-gray-500">Revenue Potential</span>
+                      <span className="font-medium text-gray-900">{selectedJob.jd_revenue_potential || '—'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold text-gray-900">Ownership</h4>
+                  <div className="rounded-lg border divide-y">
+                    <div className="flex items-center justify-between p-3 text-sm">
+                      <span className="text-gray-500">Created By</span>
+                      <span className="font-medium text-gray-900">{selectedJob.created_by_name || selectedJob.jd_created_by || '—'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 text-sm">
+                      <span className="text-gray-500">Source</span>
+                      <span className="font-medium text-gray-900">{selectedJob.jd_source || '—'}</span>
+                    </div>
+                    <div className="p-3 text-sm">
+                      <span className="block text-gray-500 mb-1">Special Instruction</span>
+                      <span className="block font-medium text-gray-900 whitespace-pre-line">{selectedJob.jd_special_instruction || '—'}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {/* Skills & Keywords */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Skills</h4>
+                  <div className="rounded-lg border p-3 bg-white min-h-[52px]">
+                    <div className="flex flex-wrap gap-2">
+                      {(Array.isArray(selectedJob.jd_skillset) ? selectedJob.jd_skillset : (selectedJob.jd_skillset ? [selectedJob.jd_skillset] : []))
+                        .map((s, idx) => (
+                          <span key={idx} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-blue-50 text-blue-700 border border-blue-200">{s}</span>
+                        ))}
+                      {(!selectedJob.jd_skillset || (Array.isArray(selectedJob.jd_skillset) && selectedJob.jd_skillset.length === 0)) && (
+                        <span className="text-xs text-gray-500">—</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Keywords</h4>
+                  <div className="rounded-lg border p-3 bg-white min-h-[52px]">
+                    <div className="flex flex-wrap gap-2">
+                      {(Array.isArray(selectedJob.jd_keywords) ? selectedJob.jd_keywords : (selectedJob.jd_keywords ? [selectedJob.jd_keywords] : []))
+                        .map((k, idx) => (
+                          <span key={idx} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-emerald-50 text-emerald-700 border border-emerald-200">{k}</span>
+                        ))}
+                      {(!selectedJob.jd_keywords || (Array.isArray(selectedJob.jd_keywords) && selectedJob.jd_keywords.length === 0)) && (
+                        <span className="text-xs text-gray-500">—</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t bg-gray-50 rounded-b-xl flex justify-end">
+              <button
+                onClick={() => setShowModal(false)}
+                className="inline-flex items-center px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-gray-900 transition"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

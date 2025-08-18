@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import jdService from '../services/jdService';
 import FormField from '../components/FormField';
@@ -7,6 +7,7 @@ import FormField from '../components/FormField';
 const JDEntry = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { id } = useParams();
   const [scanning, setScanning] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -59,6 +60,42 @@ const JDEntry = () => {
   useEffect(() => {
     loadReferenceData();
   }, []);
+
+  useEffect(() => {
+    const loadForEdit = async () => {
+      if (!id) return;
+      try {
+        const res = await jdService.getJobById(id);
+        if (res.success && res.data) {
+          const d = res.data;
+          setFormData({
+            jd_title: d.jd_title || '',
+            jd_customer_id: String(d.jd_customer_id || '1'),
+            jd_consumer: d.jd_consumer || '',
+            jd_original: d.jd_original || '',
+            jd_skillset_cat: String(d.jd_skillset_cat || '1'),
+            jd_skillset: Array.isArray(d.jd_skillset) ? d.jd_skillset : (d.jd_skillset ? JSON.parse(d.jd_skillset) : []),
+            jd_mode: String(d.jd_mode || ''),
+            jd_tenure: String(d.jd_tenure || ''),
+            jd_op_exp_min: String(d.jd_op_exp_min || ''),
+            jd_op_exp_max: String(d.jd_op_exp_max || ''),
+            jd_op_budget_min: String(d.jd_op_budget_min || ''),
+            jd_op_budget_max: String(d.jd_op_budget_max || ''),
+            jd_open_position: String(d.jd_open_position || ''),
+            jd_available_pos: d.jd_available_pos || '',
+            jd_revenue_potential: d.jd_revenue_potential || '',
+            jd_currency: d.jd_currency || 'USD',
+            jd_keywords: Array.isArray(d.jd_keywords) ? d.jd_keywords : (d.jd_keywords ? JSON.parse(d.jd_keywords) : []),
+            jd_source: d.jd_source || '',
+            jd_special_instruction: d.jd_special_instruction || '',
+            jd_created_by: String(d.jd_created_by || ''),
+            jd_status: String(d.jd_status || '1')
+          });
+        }
+      } catch {}
+    };
+    loadForEdit();
+  }, [id]);
 
   const loadReferenceData = async () => {
     try {
@@ -230,8 +267,10 @@ const JDEntry = () => {
         jd_status: parseInt(formData.jd_status)
       };
       
-      const response = await jdService.createJob(submitData);
-      toast.success('Job Description created successfully!');
+      const response = id ? await jdService.updateJob(id, submitData) : await jdService.createJob(submitData);
+      toast.success(id ? 'Job Description updated successfully!' : 'Job Description created successfully!');
+      const createdId = !id ? (response && response.data && response.data.id ? response.data.id : null) : id;
+      navigate('/report', { state: { highlightId: createdId } });
       resetForm(); // Reset form to blank state
     } catch (error) {
       if (error.response) {
@@ -258,7 +297,7 @@ const JDEntry = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Job Description Entry</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Job Description Form</h1>
             <p className="mt-2 text-gray-600">Enter the job description details and click SAVE to proceed.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -279,7 +318,90 @@ const JDEntry = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            {/* Left Column - JD Details Form */}
+            {/* Left Column - Original JD, Keywords, and Notes */}
+            <div className="space-y-6">
+              
+              {/* Original JD Section */}
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-4">Original JD</h2>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Job Description Text
+                    </label>
+                    <textarea
+                      value={formData.jd_original}
+                      onChange={(e) => handleInputChange('jd_original', e.target.value)}
+                      required
+                      placeholder="Paste the original job description here..."
+                      rows={12}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  
+                  <div className="flex justify-center">
+                    <button
+                      type="button"
+                      onClick={handleScanJD}
+                      disabled={scanning || !formData.jd_original || typeof formData.jd_original !== 'string' || !formData.jd_original.trim()}
+                      className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {scanning ? 'Scanning...' : 'SCAN'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* JD Keywords Section */}
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-4">JD Keywords</h2>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Keywords
+                    </label>
+                    <textarea
+                      value={formData.jd_keywords.join(', ')}
+                      onChange={(e) => {
+                        const keywords = e.target.value.split(',').map(k => k.trim()).filter(k => k);
+                        handleInputChange('jd_keywords', keywords);
+                      }}
+                      placeholder="Enter keywords (comma-separated)"
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Notes Section */}
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-4">Notes</h2>
+                <div className="space-y-4">
+                  <FormField
+                    label="Source"
+                    value={formData.jd_source}
+                    onChange={(value) => handleInputChange('jd_source', value)}
+                    placeholder="Job source (e.g., LinkedIn, Indeed)"
+                  />
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Special Instruction
+                    </label>
+                    <textarea
+                      value={formData.jd_special_instruction}
+                      onChange={(value) => handleInputChange('jd_special_instruction', value)}
+                      placeholder="Enter special instructions or notes..."
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Column - All Other Fields */}
             <div className="space-y-6">
               
               {/* Basic Information Section */}
@@ -329,23 +451,6 @@ const JDEntry = () => {
                     required
                     placeholder="Enter primary skill"
                   />
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Secondary Skills
-                    </label>
-                    <textarea
-                      value={formData.jd_skillset.slice(1).join(', ')}
-                      onChange={(e) => {
-                        const primarySkill = formData.jd_skillset[0] || '';
-                        const secondarySkills = e.target.value.split(',').map(s => s.trim()).filter(s => s);
-                        handleInputChange('jd_skillset', [primarySkill, ...secondarySkills].filter(s => s));
-                      }}
-                      placeholder="Enter secondary skills (comma-separated)"
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
                   
                   <FormField
                     label="Mode"
@@ -471,83 +576,6 @@ const JDEntry = () => {
                       label: `${currency.currency_name} (${currency.symbol})` 
                     }))}
                   />
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      JD Keywords
-                    </label>
-                    <textarea
-                      value={formData.jd_keywords.join(', ')}
-                      onChange={(e) => {
-                        const keywords = e.target.value.split(',').map(k => k.trim()).filter(k => k);
-                        handleInputChange('jd_keywords', keywords);
-                      }}
-                      placeholder="Enter keywords (comma-separated)"
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Right Column - From Customer */}
-            <div className="space-y-6">
-              
-              {/* Original JD Section */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Original JD</h2>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      JD Keywords
-                    </label>
-                    <textarea
-                      value={formData.jd_original}
-                      onChange={(e) => handleInputChange('jd_original', e.target.value)}
-                      required
-                      placeholder="Paste the original job description here..."
-                      rows={12}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                  
-                  <div className="flex justify-center">
-                    <button
-                      type="button"
-                      onClick={handleScanJD}
-                      disabled={scanning || !formData.jd_original || typeof formData.jd_original !== 'string' || !formData.jd_original.trim()}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      {scanning ? 'Scanning...' : 'SCAN & EXTRACT'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Notes Section */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Notes</h2>
-                <div className="space-y-4">
-                  <FormField
-                    label="Source"
-                    value={formData.jd_source}
-                    onChange={(value) => handleInputChange('jd_source', value)}
-                    placeholder="Job source (e.g., LinkedIn, Indeed)"
-                  />
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Special Instruction
-                    </label>
-                    <textarea
-                      value={formData.jd_special_instruction}
-                      onChange={(value) => handleInputChange('jd_special_instruction', value)}
-                      placeholder="Enter special instructions or notes..."
-                      rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
                 </div>
               </div>
             </div>
